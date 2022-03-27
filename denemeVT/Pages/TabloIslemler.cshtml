@@ -1,0 +1,92 @@
+﻿@page "{handler?}"
+@model denemeVT.Pages.TabloIslemlerModel
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@{
+    ViewData["Title"] = "Tablo Islemleri CRUD";
+    Layout = "_Layout";
+}
+<p>Tablo işlemleri <a href="/TabloIslemler">ASP.NET Core5 - SQLServer</a> ile yapıldı.</p>
+<div class="alert alert-info alert-dismissible fade show" role="alert">
+    @Model.mesaj
+    <button type="button" class="close" data-dismiss="alert" aria-label="Kapat">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+@if(Model.gecici == null){
+<div class="row">
+    <div class="col-8">
+        <form asp-page-handler="Yeni" method="post" class="form form-group border rounded border-success text-center p-2">
+            <div class="row">
+                <div class="col-4 pt-2">
+                    <button class="btn btn-success" style="white-space: nowrap;">Yeni Kayıt Ekle (C)</button>
+                </div>
+                <div class="col-4">
+                    Metin<br />
+                    <input type="text" name="metin" value="" maxlength="50" placeholder="metin giriniz" />
+                </div>
+                <div class="col-4">
+                    Sayı<br />
+                    <input type="text" name="sayi" value="0" maxlength="50" placeholder="sayı giriniz" />
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+}
+@if(Model.gecici != null){
+<div class="row">
+    <div class="col-8">
+        <form asp-page-handler="Guncelle" method="post" class="form form-group border rounded border-primary text-center p-2">
+            <div class="row">
+                <div class="col-4 pt-2">
+                    <button class="btn btn-primary" style="white-space: nowrap;">Güncelle (U)</button>
+                </div>
+                <div class="col-4">
+                    Metin<br />
+                    <input type="text" name="metin" value="@Model.gecici.metin" maxlength="50" placeholder="metin giriniz" />
+                </div>
+                <div class="col-4">
+                    Sayı<br />
+                    <input type="text" name="sayi" value="@Model.gecici.sayi" maxlength="50" placeholder="sayı giriniz" />
+                </div>
+                <input type="hidden" name="id" value="@Model.gecici.ID" />
+            </div>
+        </form>
+    </div>
+</div>
+}
+<h5>Veri Listesi (R)</h5>
+<table class="table table-hover table-responsive">
+    <thead>
+        <tr>
+            <th align="right">@Html.DisplayNameFor(model => model.Tablo[0].ID)
+            </th>
+            <th align="center"><a asp-page="/TabloIslemler" asp-page-handler="Sirala" asp-route-siralama="metin">@Html.DisplayNameFor(model => model.Tablo[0].metin)</a>
+            </th>
+            <th align="center"><a asp-page="/TabloIslemler" asp-page-handler="Sirala" asp-route-siralama="sayi">@Html.DisplayNameFor(model => model.Tablo[0].sayi)</a>
+            </th>
+            <th align="center">
+                <form asp-page-handler="Arama" method="get" class="form text-center form-inline">
+                    <input type="text" name="aranan" value="@Model.aramaMetni" size="10" maxlength="50" placeholder="Arama" />
+                </form>
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @if(Model.Tablo != null) 
+            @foreach (var item in Model.Tablo) {
+            <tr class="table-bordered">
+                <td>@Html.DisplayFor(modelItem => item.ID)
+                </td>
+                <td>@Html.DisplayFor(modelItem => item.metin)
+                </td>
+                <td align="right">@Html.DisplayFor(modelItem => item.sayi)
+                </td>
+                <td>
+                    <a asp-page="/TabloIslemler" asp-page-handler="Duzenle" asp-route-id="@item.ID">Düzenle (U)</a> | 
+                    <a asp-page="/TabloIslemler" asp-page-handler="Sil" asp-route-id="@item.ID">Sil (D)</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
